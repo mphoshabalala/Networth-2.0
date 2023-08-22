@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../client/styles/style.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <title>Document</title>
+  </head>
+  <body class="body-form" id="admin-form">
+    <header class="main-header">
+      <a href="#"><h1>Networth</h1></a>
+      <div>
+        <ul>
+          <li><a href="#">Home</a></li>
+        </ul>
+      </div>
+    </header>
+    <form class="form" id="admin-form">
+      <h1>Administration platform</h1>
+      <div>
+        <input
+          id="admin-form-input"
+          class="form-input"
+          type="text"
+          name="brand"
+          placeholder="Item Brand"
+          required
+        />
+        <input
+          id="admin-form-input"
+          class="form-input"
+          type="text"
+          name="marker-demand"
+          placeholder="Market Demand"
+          required
+        />
+        <input
+          id="admin-form-input"
+          class="form-input"
+          type="text"
+          name="warranty"
+          placeholder="Warranty"
+          required
+        />
+        <input
+          id="admin-form-input"
+          class="form-input"
+          type="text"
+          name="update-rate"
+          placeholder="Product Update Rate"
+          required
+        />
+      </div>
+      <button id="admin-submit" type="submit" class="btn-primary">
+        Submit
+      </button>
+    </form>
+  </body>
+  <script src="admin.js" type="module"></script>
+</html>

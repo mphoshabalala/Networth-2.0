@@ -1,0 +1,16 @@
+#admin-form {
+  width: 100%;
+  margin: 0;
+}
+
+#admin-form-input {
+  margin-right: 2rem;
+}
+
+#admin-form {
+  max-width: 100vw;
+}
+
+#admin-submit {
+  width: 19.5vw;
+}
