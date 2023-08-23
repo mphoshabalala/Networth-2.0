@@ -10,6 +10,7 @@
 body {
   padding: 0;
   width: 100vw;
+  background-color: rgba(100, 59, 59, 0.5);
 }
 
 li {
@@ -91,4 +92,28 @@ a {
   border: 1px solid rgb(104, 77, 83);
   padding: 0.3rem;
   align-items: center;
+}
+
+.selector {
+  width: 30vw;
+  border: 1px solid rgb(37, 37, 37);
+  border-radius: 0px;
+  background-color: rgb(147, 210, 221);
+  padding: 0.5rem;
+}
+
+/* Mobile form */
+
+.device-form {
+  display: flex;
+  flex-direction: column;
+  /* background-color: rgba(100, 59, 59, 0.5); */
+  padding: 2rem;
+  align-items: center;
+}
+
+.device-form-div {
+  display: flex;
+  flex-direction: column;
+  width: 30vw;
 }
