@@ -5,6 +5,8 @@ export default class Laptop extends Item {
   #cpuCores;
   #osVersion;
   #color;
+  #discStorage;
+  #discStorageType;
   constructor(marketDemand, warranty, productUpdateRate) {
     super(marketDemand, warranty, productUpdateRate); //inheritance
   }
@@ -26,6 +28,14 @@ export default class Laptop extends Item {
     return this.#color;
   }
 
+  getDiscStorage() {
+    return this.#discStorage;
+  }
+
+  getDiscStorageType() {
+    return this.#discStorageType;
+  }
+
   //Mutators
   setRamSize(ramSize) {
     this.#ramSize = ramSize;
@@ -41,6 +51,14 @@ export default class Laptop extends Item {
 
   setColor(color) {
     this.#color = color;
+  }
+
+  setDiscStorage(discStorage) {
+    this.#discStorage = discStorage;
+  }
+
+  setDiscStorageType(discStorageType) {
+    this.#discStorageType = discStorageType;
   }
 
   // functions

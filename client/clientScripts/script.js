@@ -4,13 +4,15 @@ import utilities from "./utilities.js";
 
 const indexBody = document.querySelector(".index-body");
 const formContainer = document.querySelector(".form-container");
+const mobileSelector = document.querySelector("#mobile-form");
 const ItemNamesList = ["Select Device", Mobile.name, Laptop.name];
-// console.log(ItemNamesList);
 
-// APPEND HEADER
-indexBody.append(createHeader(), formContainer);
-
-formContainer.append(createItemTypeSelector(ItemNamesList));
+// Main page entry
+indexBody.append(
+  createHeader(),
+  createItemTypeSelector(ItemNamesList),
+  formContainer
+);
 
 //APPEND DATA ASYNCHRONOUSLY
 fetchAdminData()
@@ -20,16 +22,28 @@ fetchAdminData()
       const objectToCreate = itemTypesSelector.value;
       if (objectToCreate === "Mobile") {
         formContainer.innerHTML = " ";
-        formContainer.append(createMobileForm(createBrandSelector(data)));
+        formContainer.append(createMobileForm()); //createBrandSelector(data)
       } else if (objectToCreate === "Laptop") {
-        console.log(new Laptop());
+        formContainer.innerHTML = " ";
+        formContainer.append(createLaptopForm(createBrandSelector(data)));
       }
     });
   })
   .catch((error) => {
     console.error("Error fetching admin data:", error);
   });
+if (mobileSelector) {
+  mobileSelector.addEventListener("submit", (e) => {
+    e.preventDefault();
+    console.log("mobile form submitted");
+    console.log("mobile form submitted");
+    console.log("mobile form submitted");
+    console.log("mobile form submitted");
+    console.log("mobile form submitted");
+  });
+}
 
+// UTILITIES
 function createHeader() {
   const header = utilities.createTag(
     "header",
@@ -56,7 +70,6 @@ function createHeader() {
   return header;
 }
 
-// UTILITIES
 function RegisterForm() {
   const formBody = utilities.createForm("form", "register-form", "__", "__");
   formBody.append(
@@ -177,13 +190,8 @@ function createItemTypeSelector(ItemsNames) {
 }
 
 //create a form for mobile
-function createMobileForm(brand) {
-  const form = utilities.createForm(
-    "device-form",
-    "mobile-form",
-    "submit",
-    "POST"
-  );
+function createMobileForm() {
+  const form = utilities.createForm("device-form", "mobile-form", "", "");
 
   const div = utilities.createDiv("device-form-div", "mobile-div");
   div.append(
@@ -191,12 +199,12 @@ function createMobileForm(brand) {
       "h1",
       "form-header",
       "mobile-form-header",
-      "Input Your Phone Data"
+      "Input your phone data"
     ),
-    brand,
+    // brand,
     utilities.createInput(
       "form-input",
-      "mobile-form-input",
+      "mobile-model-input",
       "text",
       "model",
       "Model",
@@ -204,7 +212,7 @@ function createMobileForm(brand) {
     ),
     utilities.createInput(
       "form-input",
-      "mobile-form-input",
+      "mobile-age-input",
       "text",
       "age",
       "Age",
@@ -212,7 +220,7 @@ function createMobileForm(brand) {
     ),
     utilities.createInput(
       "form-input",
-      "mobile-form-input",
+      "mobile-os-input",
       "text",
       "os",
       "OS e.g. Android",
@@ -220,23 +228,116 @@ function createMobileForm(brand) {
     ),
     utilities.createInput(
       "form-input",
-      "mobile-form-input",
+      "mobile-os-version-input",
       "text",
       "os_version",
       "OS Version e.g. 11",
       true
     ),
+    // utilities.createInput(
+    //   "form-input",
+    //   "mobile-model-input",
+    //   "text",
+    //   "model",
+    //   "Model",
+    //   true
+    // ),
+    utilities.createButton(
+      "btn-primary",
+      "mobile-form-btn",
+      "submit",
+      "Find Worth"
+    )
+  );
+  form.append(div);
+  return form;
+}
+
+function createLaptopForm(brand) {
+  const form = utilities.createForm(
+    "device-form",
+    "laptop-form",
+    "submit",
+    "POST"
+  );
+
+  const div = utilities.createDiv("device-form-div", "laptop-div");
+  div.append(
+    utilities.createTag(
+      "h1",
+      "form-header",
+      "laptop-form-header",
+      "Input your laptop data"
+    ),
+    brand,
     utilities.createInput(
       "form-input",
-      "mobile-form-input",
+      "laptop-model-input",
       "text",
       "model",
       "Model",
       true
     ),
+    utilities.createInput(
+      "form-input",
+      "laptop-age-input",
+      "text",
+      "age",
+      "Age",
+      true
+    ),
+    utilities.createInput(
+      "form-input",
+      "laptop-os-input",
+      "text",
+      "os",
+      "OS e.g. Windows",
+      true
+    ),
+    utilities.createInput(
+      "form-input",
+      "laptop-os-version-input",
+      "text",
+      "os_version",
+      "OS Version e.g. 11",
+      true
+    ),
+    // utilities.createInput(
+    //   "form-input",
+    //   "laptop-form-input",
+    //   "text",
+    //   "model",
+    //   "Model",
+    //   true
+    // ),
+    utilities.createInput(
+      "form-input",
+      "laptop-ram-size-input",
+      "text",
+      "ramSize",
+      "Ram Size",
+      true
+    ),
+    utilities.createInput(
+      "form-input",
+      "laptop-cpu-cores-input",
+      "text",
+      "cpuCores",
+      "CPU Cores",
+      true
+    ),
+    utilities.createInput(
+      "form-input",
+      "laptop-drive-storage-input",
+      "text",
+      "driveStorage",
+      "Drive Storage",
+      true
+    ),
+    createItemTypeSelector(["Select Disc Type", "SSD", "HDD", "Both"]),
     utilities.createButton(
       "btn-primary",
-      "mobile-form-btn",
+      "laptop-form-btn",
       "submit",
       "Find Worth"
     )
