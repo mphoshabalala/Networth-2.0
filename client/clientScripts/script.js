@@ -2,12 +2,14 @@ import Mobile from "../Classes/Phone.js";
 import Laptop from "../Classes/Laptop.js";
 import utilities from "./utilities.js";
 
+//GLOBAL EVENT LISTENERS
 const indexBody = document.querySelector(".index-body");
 const formContainer = document.querySelector(".form-container");
-const mobileSelector = document.querySelector("#mobile-form");
+
+//GLOBAL VARIABLES AND CONSTANTS
 const ItemNamesList = ["Select Device", Mobile.name, Laptop.name];
 
-// Main page entry
+// HTML BODY ENTRY ELEMENTS
 indexBody.append(
   createHeader(),
   createItemTypeSelector(ItemNamesList),
@@ -22,7 +24,51 @@ fetchAdminData()
       const objectToCreate = itemTypesSelector.value;
       if (objectToCreate === "Mobile") {
         formContainer.innerHTML = " ";
-        formContainer.append(createMobileForm()); //createBrandSelector(data)
+        e.preventDefault();
+        formContainer.append(createMobileForm(createBrandSelector(data)));
+
+        const mobileSelector = document.querySelector("#mobile-form");
+        mobileSelector.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const brandSelector = document.querySelector("#brand-selection");
+          const brand = brandSelector.value;
+          const formData = new FormData(mobileSelector);
+          const model = formData.get("model");
+          const age = formData.get("age");
+          const os = formData.get("os");
+          const osVersion = formData.get("os-version");
+          const price = formData.get("price");
+          const selectedData = data.find((item) => item.item_name === brand);
+          const marketDemand = selectedData.market_demand;
+          const productUpdateRate = selectedData.product_update_rate;
+          const warranty = selectedData.warranty;
+          console.log({
+            brand,
+            model,
+            age,
+            os,
+            osVersion,
+            price: `$${price}`,
+            marketDemand,
+            productUpdateRate,
+            warranty,
+          });
+
+          //instantiate the mobile object
+          const mobile = new Mobile(marketDemand, warranty, productUpdateRate);
+          mobile.setBrand(brand);
+          mobile.setModel(model);
+          mobile.setAge(age);
+          mobile.setOs(os);
+          mobile.setOSVersion(osVersion);
+          mobile.setPrice(price);
+          mobile.setMarketDemand(marketDemand);
+          mobile.setProductUpdateRate(productUpdateRate);
+          mobile.setWarranty(warranty);
+          mobile.setColor("Default");
+
+          console.log(mobile.calculateDepreciationPercentage());
+        });
       } else if (objectToCreate === "Laptop") {
         formContainer.innerHTML = " ";
         formContainer.append(createLaptopForm(createBrandSelector(data)));
@@ -32,16 +78,6 @@ fetchAdminData()
   .catch((error) => {
     console.error("Error fetching admin data:", error);
   });
-if (mobileSelector) {
-  mobileSelector.addEventListener("submit", (e) => {
-    e.preventDefault();
-    console.log("mobile form submitted");
-    console.log("mobile form submitted");
-    console.log("mobile form submitted");
-    console.log("mobile form submitted");
-    console.log("mobile form submitted");
-  });
-}
 
 // UTILITIES
 function createHeader() {
@@ -142,7 +178,12 @@ function RegisterForm() {
 
 // create select tag
 function createBrandSelector(DataObject) {
-  const select = utilities.createTag("select", "selector", "selectorID", "");
+  const select = utilities.createTag(
+    "select",
+    "selector",
+    "brand-selection",
+    ""
+  );
   const firstOption = utilities.createTag(
     "option",
     "option-class",
@@ -190,8 +231,8 @@ function createItemTypeSelector(ItemsNames) {
 }
 
 //create a form for mobile
-function createMobileForm() {
-  const form = utilities.createForm("device-form", "mobile-form", "", "");
+function createMobileForm(brand) {
+  const form = utilities.createForm("device-form", "mobile-form", " ", "POST");
 
   const div = utilities.createDiv("device-form-div", "mobile-div");
   div.append(
@@ -201,7 +242,7 @@ function createMobileForm() {
       "mobile-form-header",
       "Input your phone data"
     ),
-    // brand,
+    brand,
     utilities.createInput(
       "form-input",
       "mobile-model-input",
@@ -230,18 +271,18 @@ function createMobileForm() {
       "form-input",
       "mobile-os-version-input",
       "text",
-      "os_version",
+      "os-version",
       "OS Version e.g. 11",
       true
     ),
-    // utilities.createInput(
-    //   "form-input",
-    //   "mobile-model-input",
-    //   "text",
-    //   "model",
-    //   "Model",
-    //   true
-    // ),
+    utilities.createInput(
+      "form-input",
+      "mobile-price-input",
+      "text",
+      "price",
+      "Price in USD",
+      true
+    ),
     utilities.createButton(
       "btn-primary",
       "mobile-form-btn",

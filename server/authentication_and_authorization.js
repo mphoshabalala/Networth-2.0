@@ -72,13 +72,13 @@ authenticationRouter.post("/login", (req, res) => {
     //if error occured log the error, and respond with appropriate status
     if (err) {
       console.log(err);
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
 
     //check if email match
     if (results.length === 0) {
       console.log(`invalid email: ${email}`);
-      return res.status(500).json({ message: `invalid email` });
+      return res.status(500).json({ message: `Invalid email` });
     }
     //get hashed password and compare to the passowrd used
     const hashedPassword = results[0].user_password;

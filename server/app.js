@@ -10,7 +10,7 @@ const adminData = databaseConnection();
 
 adminData.connect((err) => {
   if (err) {
-    console.log("connection failed: ", err);
+    console.error("connection failed: ", err);
   } else {
     console.log("connected to admin database");
   }
