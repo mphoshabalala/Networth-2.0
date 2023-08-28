@@ -24,9 +24,27 @@ app.use(express.json());
 // Use the authentication router for authentication and authorization
 app.use(authenticationRouter);
 
-app.get("/just", verifyToken, (req, res) => {
+app.get("/user-data", verifyToken, (req, res) => {
   const authenticatedUser = req.user_id;
   res.json({ user_id: authenticatedUser });
+});
+
+app.get("/user-assets", verifyToken, (req, res) => {
+  const user_id = req.user_id;
+  const sql = `
+    SELECT *
+    FROM phone
+    WHERE user_id = ?
+  `;
+  connection.query(sql, [user_id], (err, results) => {
+    if (err) {
+      console.log("Could not access data from the database succesfully");
+      return res
+        .status(500)
+        .json({ error: "Could not access data from the database succesfully" });
+    }
+    return res.status(200).json({ results: results[0] });
+  });
 });
 
 //post admin data to the database
