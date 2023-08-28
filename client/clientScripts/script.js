@@ -2,20 +2,32 @@ import Mobile from "../Classes/Phone.js";
 import Laptop from "../Classes/Laptop.js";
 import utilities from "./utilities.js";
 
+const uri = "http://localhost:5000";
+let user_id;
+console.log(user_id);
 //GLOBAL EVENT LISTENERS
 const indexBody = document.querySelector(".index-body");
 const formContainer = document.querySelector(".form-container");
-
+const loggedBody = document.querySelector(".dashboard-body");
 //GLOBAL VARIABLES AND CONSTANTS
 const ItemNamesList = ["Select Device", Mobile.name, Laptop.name];
 
 // HTML BODY ENTRY ELEMENTS
-indexBody.append(
-  createHeader(),
-  createItemTypeSelector(ItemNamesList),
-  formContainer
-);
+if (indexBody) {
+  indexBody.append(
+    createHeader(),
+    createItemTypeSelector(ItemNamesList),
+    formContainer
+  );
+}
 
+if (loggedBody) {
+  loggedBody.append(
+    createLoggedHeader(),
+    createItemTypeSelector(ItemNamesList),
+    formContainer
+  );
+}
 //APPEND DATA ASYNCHRONOUSLY
 fetchAdminData()
   .then((data) => {
@@ -42,17 +54,6 @@ fetchAdminData()
           const marketDemand = selectedData.market_demand;
           const productUpdateRate = selectedData.product_update_rate;
           const warranty = selectedData.warranty;
-          console.log({
-            brand,
-            model,
-            age,
-            os,
-            osVersion,
-            price: `$${price}`,
-            marketDemand,
-            productUpdateRate,
-            warranty,
-          });
 
           //instantiate the mobile object
           const mobile = new Mobile(marketDemand, warranty, productUpdateRate);
@@ -66,8 +67,47 @@ fetchAdminData()
           mobile.setProductUpdateRate(productUpdateRate);
           mobile.setWarranty(warranty);
           mobile.setColor("Default");
+          const color = mobile.getColor();
 
-          console.log(mobile.calculateDepreciationPercentage());
+          const phoneData = {
+            brand,
+            model,
+            age,
+            os,
+            osVersion,
+            productUpdateRate,
+            warranty,
+            color,
+            marketDemand,
+            price,
+            user_id,
+          };
+
+          const inputFields = document.querySelectorAll(".form-input");
+          inputFields.forEach((input) => {
+            input.value = "";
+          });
+
+          // send the data to the server
+          fetch(uri + "/phone-data", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(phoneData),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Unable to connect to the server");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log("Response data: " + data);
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
         });
       } else if (objectToCreate === "Laptop") {
         formContainer.innerHTML = " ";
@@ -78,6 +118,57 @@ fetchAdminData()
   .catch((error) => {
     console.error("Error fetching admin data:", error);
   });
+
+const loggedInPage = document.querySelector(".logged-in");
+const token = localStorage.getItem("token");
+
+if (token) {
+  if (!token) {
+    alert("You need to be logged in to access the protected content.");
+  }
+
+  fetch("http://localhost:5000/just", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      user_id = data.user_id;
+    })
+    .catch((error) => {
+      console.error("Error fetching authenticated user data:", error);
+    });
+}
+//fetching protected pages
+// function fetchProtectedContent(token) {
+//   if (!token) {
+//     alert("You need to be logged in to access the protected content.");
+//     return;
+//   }
+
+//   fetch("http://localhost:5000/just", {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   })
+//     .then((response) => {
+//       if (!response.ok) {
+//         throw new Error("Couldnt fetch data");
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching protected content:", error);
+//     });
+// }
 
 // UTILITIES
 function createHeader() {
@@ -90,8 +181,49 @@ function createHeader() {
 
   const menuDivs = utilities.createDiv("menu", "header-menu");
   menuDivs.append(
-    utilities.createAnchor("auth-anchor", "header-sign-in", "#", "Sign In"),
-    utilities.createAnchor("auth-anchor", "header-sign-up", "#", "Sign Up")
+    utilities.createAnchor(
+      "auth-anchor",
+      "header-sign-in",
+      "../authentication client/html/login.html",
+      "Sign In"
+    ),
+    utilities.createAnchor(
+      "auth-anchor",
+      "header-sign-up",
+      "../authentication client/html/signup.html",
+      "Sign Up"
+    )
+  );
+  header.append(
+    utilities.createAnchor(
+      "header-title",
+      "register-header-anchor",
+      "index.html",
+      "Networth"
+    ),
+    menuDivs
+  );
+
+  return header;
+}
+
+function createLoggedHeader() {
+  const header = utilities.createTag(
+    "header",
+    "main-header",
+    "networth-header",
+    ""
+  );
+
+  const menuDivs = utilities.createDiv("menu", "header-menu");
+  menuDivs.append(
+    utilities.createAnchor("auth-anchor", "header-sign-up", "#", "Your Assets"),
+    utilities.createAnchor(
+      "auth-anchor",
+      "header-sign-out",
+      "index.html",
+      "Log Out"
+    )
   );
   header.append(
     utilities.createAnchor(
@@ -205,7 +337,7 @@ function createBrandSelector(DataObject) {
 
 // fetch data from the admin server
 function fetchAdminData() {
-  return fetch("http://localhost:5000/admin")
+  return fetch(uri + "/admin")
     .then((response) => {
       if (!response.ok) {
         throw new Error(

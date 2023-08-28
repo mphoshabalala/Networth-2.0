@@ -6,9 +6,9 @@ const authenticationRouter = require("./authentication_and_authorization.js");
 
 const app = express();
 
-const adminData = databaseConnection();
+const connection = databaseConnection();
 
-adminData.connect((err) => {
+connection.connect((err) => {
   if (err) {
     console.error("connection failed: ", err);
   } else {
@@ -25,7 +25,8 @@ app.use(express.json());
 app.use(authenticationRouter);
 
 app.get("/just", verifyToken, (req, res) => {
-  res.send("just checking");
+  const authenticatedUser = req.user_id;
+  res.json({ user_id: authenticatedUser });
 });
 
 //post admin data to the database
@@ -36,7 +37,7 @@ app.post("/admin", (req, res) => {
         VALUES (DEFAULT, ?, ?, ?, ?);
     `;
 
-  adminData.query(
+  connection.query(
     sql,
     [brand, marketDemand, warranty, updateRate],
     (err, results) => {
@@ -59,11 +60,63 @@ app.get("/admin", (req, res) => {
         FROM application_data
     `;
 
-  adminData.query(sql, (err, results) => {
+  connection.query(sql, (err, results) => {
     err
       ? console.log("Error fetching data", err)
       : res.status(200).json(results);
   });
+});
+
+app.post("/phone-data", (req, res) => {
+  // const user_id = req.user_id;
+  //get phone data from client
+  const {
+    brand,
+    model,
+    age,
+    os,
+    osVersion,
+    productUpdateRate,
+    warranty,
+    color,
+    marketDemand,
+    price,
+    user_id,
+  } = req.body;
+
+  //send data to the database
+  const sql = `
+      INSERT INTO phone 
+      (phone_id, phone_brand,phone_model, phone_age, phone_os, phone_os_version, phone_update_rate, phone_warranty, phone_market_demand, phone_color, phone_price, user_id)
+      VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+  connection.query(
+    sql,
+    [
+      brand,
+      model,
+      age,
+      os,
+      osVersion,
+      productUpdateRate,
+      warranty,
+      marketDemand,
+      color,
+      price,
+      user_id,
+    ],
+    (err, results) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ Error: "Did not add data to the database succesfylly" });
+      }
+      return res.status(200).json({
+        Message: "Data submited succesfully",
+      });
+    }
+  );
+  console.log(req.body, user_id);
 });
 
 function verifyToken(req, res, next) {
