@@ -2,35 +2,43 @@ import Mobile from "../Classes/Phone.js";
 import Laptop from "../Classes/Laptop.js";
 import utilities from "./utilities.js";
 import utilityComponents from "./utilityComponents.js";
-
+import api from "./apiRequests.js";
 const uri = "http://localhost:5000";
 let user_id;
-console.log(user_id);
 //GLOBAL EVENT LISTENERS
-const indexBody = document.querySelector(".index-body");
+
+const body = document.querySelector(".body");
+const indexBody = document.querySelector("#index-body");
 const formContainer = document.querySelector(".form-container");
-const loggedBody = document.querySelector(".dashboard-body");
+const loggedBody = document.querySelector("#logged");
+const assets = document.querySelector("#main-assets");
 //GLOBAL VARIABLES AND CONSTANTS
 const ItemNamesList = ["Select Device", Mobile.name, Laptop.name];
 
 // HTML BODY ENTRY ELEMENTS
-if (indexBody) {
-  indexBody.append(
-    utilityComponents.createHeader(),
-    utilityComponents.createItemTypeSelector(ItemNamesList),
-    formContainer
-  );
+if (body) {
+  if (indexBody) {
+    indexBody.append(
+      utilityComponents.createHeader(),
+      utilityComponents.createItemTypeSelector(ItemNamesList),
+      formContainer
+    );
+  } else if (loggedBody) {
+    loggedBody.append(
+      utilityComponents.createLoggedHeader(),
+      utilityComponents.createItemTypeSelector(ItemNamesList),
+      formContainer
+    );
+  } else if (assets) {
+    assets.append(utilityComponents.createLoggedHeader());
+  }
+
+  body.append(utilityComponents.createFooter());
 }
 
-if (loggedBody) {
-  loggedBody.append(
-    utilityComponents.createLoggedHeader(),
-    utilityComponents.createItemTypeSelector(ItemNamesList),
-    formContainer
-  );
-}
 //APPEND DATA ASYNCHRONOUSLY
-fetchAdminData()
+api
+  .fetchAdminData(uri)
   .then((data) => {
     const itemTypesSelector = document.querySelector("#item-type");
     itemTypesSelector.addEventListener("change", (e) => {
@@ -93,13 +101,8 @@ fetchAdminData()
           });
 
           // send the data to the server
-          fetch(uri + "/phone-data", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(phoneData),
-          })
+          api
+            .postPhoneData(phoneData)
             .then((response) => {
               if (!response.ok) {
                 throw new Error("Unable to connect to the server");
@@ -107,7 +110,7 @@ fetchAdminData()
               return response.json();
             })
             .then((data) => {
-              console.log("Response data: " + data);
+              // console.log("Response data: " + data);
             })
             .catch((err) => {
               console.log(err.message);
@@ -132,7 +135,7 @@ fetchAdminData()
     console.error("Error fetching admin data:", error);
   });
 
-const loggedInPage = document.querySelector(".logged-in");
+// const loggedInPage = document.querySelector(".logged-in");
 const token = localStorage.getItem("token");
 
 if (token) {
@@ -140,38 +143,12 @@ if (token) {
     alert("You need to be logged in to access the protected content.");
   }
 
-  fetchLoggedInUserData()
+  api
+    .fetchLoggedInUserData(uri, token)
     .then((data) => {
       user_id = data.user_id;
     })
     .catch((error) => {
       console.error("Error fetching authenticated user data:", error);
     });
-}
-
-// fetch data from the admin server
-function fetchAdminData() {
-  return fetch(uri + "/admin")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          "Unable to get data from the server, Error: " + response.message
-        );
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("Error fetching admin data:", error);
-    });
-}
-
-function fetchLoggedInUserData() {
-  return fetch(uri + "/user-data", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then((response) => {
-    return response.json();
-  });
 }

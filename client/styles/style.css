@@ -8,9 +8,10 @@
 }
 
 body {
-  padding: 0;
+  /* padding: 0; */
   width: 100vw;
-  background-color: rgba(100, 59, 59, 0.5);
+  /* background-image: url("../Resources/background.jpg") center/cover no-repeat; */
+  background-image: url("../Resources/background.jpg");
 }
 
 li {
@@ -20,7 +21,7 @@ li {
 .form {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
+  align-items: center;
   justify-content: center;
   padding: 2rem;
   background-color: rgba(100, 59, 59, 0.5);
@@ -116,4 +117,20 @@ a {
   display: flex;
   flex-direction: column;
   width: 30vw;
+}
+
+.main-footer {
+  background-color: aliceblue;
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  /* max-width: 100vw; */
+  width: 100vw;
+}
+
+h1 {
+  color: antiquewhite;
 }

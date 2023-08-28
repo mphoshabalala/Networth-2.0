@@ -49,7 +49,7 @@ const utilityComponents = {
       utilities.createAnchor(
         "auth-anchor",
         "header-sign-up",
-        "#",
+        "assets.html",
         "Your Assets"
       ),
       utilities.createAnchor(
@@ -291,14 +291,6 @@ const utilityComponents = {
         "OS Version e.g. 11",
         true
       ),
-      // utilities.createInput(
-      //   "form-input",
-      //   "laptop-form-input",
-      //   "text",
-      //   "model",
-      //   "Model",
-      //   true
-      // ),
       utilities.createInput(
         "form-input",
         "laptop-ram-size-input",
@@ -333,6 +325,19 @@ const utilityComponents = {
     );
     form.append(div);
     return form;
+  },
+
+  createFooter: function () {
+    const footer = utilities.createDiv("main-footer", "page-footer");
+    footer.append(
+      utilities.createTag(
+        "p",
+        "copyrights",
+        "networth-copyrights",
+        `Copyright Reserved.2023, Networth By Uracline Space. Website By UraclineSpace`
+      )
+    );
+    return footer;
   },
 };
 
