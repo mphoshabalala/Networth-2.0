@@ -41,6 +41,18 @@ li {
   cursor: pointer;
 }
 
+.btn-secondary {
+  border: none;
+  background-color: rgb(153, 50, 50);
+  color: white;
+  padding: 0.4rem;
+}
+
+.btn-secondary:hover {
+  cursor: pointer;
+  background-color: rgba(153, 50, 50, 0.5);
+}
+
 .form-input,
 .form-label {
   margin: 0.5rem 0;
@@ -133,4 +145,44 @@ a {
 
 h1 {
   color: antiquewhite;
+}
+
+/* ASSETS */
+
+#main-assets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.item-List {
+  width: 70%;
+  background-color: rgba(240, 248, 255, 0.7);
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  overflow: auto;
+  margin: 2rem;
+  border-radius: 0.5rem;
+}
+
+#networth-header {
+  width: 100vw;
+  padding: 1rem 2rem;
+}
+
+.list-item {
+  display: flex;
+  /* width: 100%; */
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+#even-item {
+  background-color: rgba(88, 88, 88, 0.4);
+}
+
+#list-item-header {
+  background-color: rgb(211, 79, 79);
 }

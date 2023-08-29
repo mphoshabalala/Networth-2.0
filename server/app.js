@@ -3,6 +3,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { databaseConnection } = require("./database.js");
 const authenticationRouter = require("./authentication_and_authorization.js");
+const { verify } = require("crypto");
 
 const app = express();
 
@@ -43,7 +44,8 @@ app.get("/user-assets", verifyToken, (req, res) => {
         .status(500)
         .json({ error: "Could not access data from the database succesfully" });
     }
-    return res.status(200).json({ results: results[0] });
+    // console.log(results);
+    res.status(200).json({ assets: results });
   });
 });
 

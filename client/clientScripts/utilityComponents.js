@@ -1,4 +1,6 @@
+import Mobile from "../Classes/Phone.js";
 import utilities from "./utilities.js";
+// import Mobile from "../Classes/Phone.js";
 const utilityComponents = {
   // create select tag
   createBrandSelector: function (DataObject) {
@@ -339,6 +341,93 @@ const utilityComponents = {
     );
     return footer;
   },
+
+  buildMobile: function (
+    brand,
+    model,
+    age,
+    os,
+    osVersion,
+    price,
+    marketDemand,
+    productUpdateRate,
+    warranty
+  ) {
+    const mobile = new Mobile(marketDemand, warranty, productUpdateRate);
+    mobile.setBrand(brand);
+    mobile.setModel(model);
+    mobile.setAge(age);
+    mobile.setOs(os);
+    mobile.setOSVersion(osVersion);
+    mobile.setPrice(price);
+    mobile.setMarketDemand(marketDemand);
+    mobile.setProductUpdateRate(productUpdateRate);
+    mobile.setWarranty(warranty);
+    mobile.setColor("Default");
+
+    return mobile;
+  },
+
+  createPhoneList: function (phoneData) {
+    const outerDiv = utilities.createDiv("item-List", " ");
+    const mainHeader = utilities.createDiv("list-item", "list-item-header");
+    mainHeader.append(
+      utilities.createTag("p", "item-name", "asset", "Item Name"),
+      utilities.createTag("p", "item-name", "asset", "Current Price"),
+      utilities.createTag("p", "item-name", "asset", "Trend")
+    );
+    outerDiv.append(mainHeader);
+    let index = 0;
+    phoneData.forEach((dataElement) => {
+      const mobile = utilityComponents.buildMobile(
+        dataElement.phone_brand,
+        dataElement.phone_model,
+        dataElement.phone_age,
+        dataElement.phone_os,
+        dataElement.phone_os_version,
+        dataElement.phone_price,
+        dataElement.phone_market_demand,
+        dataElement.phone_update_rate,
+        dataElement.phone_warranty
+      );
+      index++;
+      let item;
+      if (index % 2 === 0) {
+        item = utilities.createDiv("list-item", "even-item");
+      } else {
+        item = utilities.createDiv("list-item", "odd-item");
+      }
+
+      const name = utilities.createTag(
+        "p",
+        "item-name",
+        "asset",
+        mobile.getBrand() + " " + mobile.getModel()
+      );
+      const currentPrice = utilities.createTag(
+        "p",
+        "item-name",
+        "asset",
+        `$${(
+          mobile.getPrice() -
+          (mobile.calculateDepreciationPercentage() / 100) * mobile.getPrice()
+        ).toFixed(2)}`
+      );
+      const observeAssetTrend = utilities.createButton(
+        "btn-secondary",
+        `${mobile.getBrand}-trend`,
+        "button",
+        "See Trend"
+      );
+
+      item.append(name, currentPrice, observeAssetTrend);
+      outerDiv.append(item);
+    });
+
+    return outerDiv;
+  },
+
+  createAssets: function () {},
 };
 
 export default utilityComponents;

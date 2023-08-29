@@ -4,14 +4,20 @@ import utilities from "./utilities.js";
 import utilityComponents from "./utilityComponents.js";
 import api from "./apiRequests.js";
 const uri = "http://localhost:5000";
+
+//global variables
+let userAssetsList;
 let user_id;
+const token = localStorage.getItem("token");
 //GLOBAL EVENT LISTENERS
+const userData = document.createElement("p");
 
 const body = document.querySelector(".body");
 const indexBody = document.querySelector("#index-body");
 const formContainer = document.querySelector(".form-container");
 const loggedBody = document.querySelector("#logged");
 const assets = document.querySelector("#main-assets");
+const outerBodyAssets = document.querySelector("#assets");
 //GLOBAL VARIABLES AND CONSTANTS
 const ItemNamesList = ["Select Device", Mobile.name, Laptop.name];
 
@@ -31,6 +37,10 @@ if (body) {
     );
   } else if (assets) {
     assets.append(utilityComponents.createLoggedHeader());
+    api.fetchAssets(uri, token).then((data) => {
+      console.log(data);
+      assets.append(utilityComponents.createPhoneList(data.assets));
+    });
   }
 
   body.append(utilityComponents.createFooter());
@@ -68,18 +78,18 @@ api
           const productUpdateRate = selectedData.product_update_rate;
           const warranty = selectedData.warranty;
 
-          //instantiate the mobile object
-          const mobile = new Mobile(marketDemand, warranty, productUpdateRate);
-          mobile.setBrand(brand);
-          mobile.setModel(model);
-          mobile.setAge(age);
-          mobile.setOs(os);
-          mobile.setOSVersion(osVersion);
-          mobile.setPrice(price);
-          mobile.setMarketDemand(marketDemand);
-          mobile.setProductUpdateRate(productUpdateRate);
-          mobile.setWarranty(warranty);
-          mobile.setColor("Default");
+          const mobile = utilityComponents.buildMobile(
+            brand,
+            model,
+            age,
+            os,
+            osVersion,
+            price,
+            marketDemand,
+            productUpdateRate,
+            warranty
+          );
+          console.log(mobile);
           const color = mobile.getColor();
           const phoneData = {
             brand,
@@ -136,7 +146,6 @@ api
   });
 
 // const loggedInPage = document.querySelector(".logged-in");
-const token = localStorage.getItem("token");
 
 if (token) {
   if (!token) {
