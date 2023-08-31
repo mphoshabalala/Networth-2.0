@@ -26,13 +26,13 @@ if (body) {
   if (indexBody) {
     indexBody.append(
       utilityComponents.createHeader(),
-      utilityComponents.createItemTypeSelector(ItemNamesList),
+      utilityComponents.createItemTypeSelector(ItemNamesList, "device-type"),
       formContainer
     );
   } else if (loggedBody) {
     loggedBody.append(
       utilityComponents.createLoggedHeader(),
-      utilityComponents.createItemTypeSelector(ItemNamesList),
+      utilityComponents.createItemTypeSelector(ItemNamesList, "device-type"),
       formContainer
     );
   } else if (assets) {
@@ -50,7 +50,7 @@ if (body) {
 api
   .fetchAdminData(uri)
   .then((data) => {
-    const itemTypesSelector = document.querySelector("#item-type");
+    const itemTypesSelector = document.querySelector("#device-type");
     itemTypesSelector.addEventListener("change", (e) => {
       const objectToCreate = itemTypesSelector.value;
       if (objectToCreate === "Mobile") {
@@ -89,7 +89,6 @@ api
             productUpdateRate,
             warranty
           );
-          console.log(mobile);
           const color = mobile.getColor();
           const phoneData = {
             brand,
@@ -105,22 +104,16 @@ api
             user_id,
           };
 
-          const inputFields = document.querySelectorAll(".form-input");
-          inputFields.forEach((input) => {
-            input.value = "";
-          });
+          utilityComponents.clearInputFields();
 
           // send the data to the server
           api
-            .postPhoneData(phoneData)
+            .postData(uri + "/phone-data", phoneData)
             .then((response) => {
               if (!response.ok) {
                 throw new Error("Unable to connect to the server");
               }
               return response.json();
-            })
-            .then((data) => {
-              // console.log("Response data: " + data);
             })
             .catch((err) => {
               console.log(err.message);
@@ -128,16 +121,90 @@ api
         });
       } else if (objectToCreate === "Laptop") {
         formContainer.innerHTML = " ";
+        e.preventDefault();
+        //append laptop form inputs
         formContainer.append(
           utilityComponents.createLaptopForm(
             utilityComponents.createBrandSelector(data),
-            utilityComponents.createItemTypeSelector([
-              "Select drive type",
-              "HDD",
-              "SSD",
-            ])
+            utilityComponents.createItemTypeSelector(
+              ["Select drive type", "HDD", "SSD"],
+              "drive-type"
+            )
           )
         );
+
+        const laptopForm = document.querySelector("#laptop-form");
+        laptopForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          //get form data
+          const brandSelector = document.querySelector("#brand-selection");
+          const brand = brandSelector.value;
+          const selectedData = data.find((item) => item.item_name === brand);
+          const marketDemand = selectedData.market_demand;
+          const productUpdateRate = selectedData.product_update_rate;
+          const warranty = selectedData.warranty;
+          const driveTypeSelector = document.querySelector("#drive-type");
+          const formData = new FormData(laptopForm);
+          const driveType = driveTypeSelector.value;
+          const model = formData.get("model");
+          const age = formData.get("age");
+          const os = formData.get("os");
+          const os_version = formData.get("os_version");
+          const ramSize = formData.get("ram_size");
+          const cpuCores = formData.get("cpu_cores");
+          const driveStorage = formData.get("drive_storage");
+          const price = formData.get("price");
+
+          const laptop = utilityComponents.buildLaptop(
+            brand,
+            model,
+            age,
+            os,
+            os_version,
+            ramSize,
+            cpuCores,
+            driveStorage,
+            driveType,
+            price,
+            marketDemand,
+            productUpdateRate,
+            warranty
+          );
+          const color = laptop.getColor();
+
+          const laptopData = {
+            brand,
+            model,
+            age,
+            os,
+            os_version,
+            productUpdateRate,
+            warranty,
+            marketDemand,
+            color,
+            price,
+            ramSize,
+            cpuCores,
+            driveStorage,
+            driveType,
+            user_id,
+          };
+          console.log(laptopData);
+          utilityComponents.clearInputFields();
+
+          //send the data to the server
+          api
+            .postData(uri + "/laptop-data", laptopData)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Unable to connect to the server");
+              }
+              return response.json();
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+        });
       }
     });
   })

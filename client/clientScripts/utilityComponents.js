@@ -1,4 +1,5 @@
 import Mobile from "../Classes/Phone.js";
+import Laptop from "../Classes/Laptop.js";
 import utilities from "./utilities.js";
 // import Mobile from "../Classes/Phone.js";
 const utilityComponents = {
@@ -29,8 +30,8 @@ const utilityComponents = {
     return select;
   },
   //create ITEMS TYPE SELECTOR
-  createItemTypeSelector: function (ItemsNames) {
-    const select = utilities.createTag("select", "selector", "item-type", "");
+  createItemTypeSelector: function (ItemsNames, id) {
+    const select = utilities.createTag("select", "selector", id, "");
 
     ItemsNames.forEach((name) => {
       const option = utilities.createTag("option", "option-class", name, name);
@@ -297,7 +298,7 @@ const utilityComponents = {
         "form-input",
         "laptop-ram-size-input",
         "text",
-        "ramSize",
+        "ram_size",
         "Ram Size",
         true
       ),
@@ -305,7 +306,7 @@ const utilityComponents = {
         "form-input",
         "laptop-cpu-cores-input",
         "text",
-        "cpuCores",
+        "cpu_cores",
         "CPU Cores",
         true
       ),
@@ -313,8 +314,16 @@ const utilityComponents = {
         "form-input",
         "laptop-drive-storage-input",
         "text",
-        "driveStorage",
+        "drive_storage",
         "Drive Storage",
+        true
+      ),
+      utilities.createInput(
+        "form-input",
+        "mobile-price-input",
+        "text",
+        "price",
+        "Price in USD",
         true
       ),
       itemTypeSelector,
@@ -366,6 +375,36 @@ const utilityComponents = {
     mobile.setColor("Default");
 
     return mobile;
+  },
+
+  buildLaptop: function (
+    brand,
+    model,
+    age,
+    os,
+    os_version,
+    ramSize,
+    cpuCores,
+    driveStorage,
+    driveType,
+    price,
+    marketDemand,
+    productUpdateRate,
+    warranty
+  ) {
+    const laptop = new Laptop(marketDemand, warranty, productUpdateRate);
+    laptop.setBrand(brand);
+    laptop.setModel(model);
+    laptop.setAge(age);
+    laptop.setOs(os);
+    laptop.setOSVersion(os_version);
+    laptop.setRamSize(ramSize);
+    laptop.setCPUCores(cpuCores);
+    laptop.setDiscStorage(driveStorage);
+    laptop.setDiscStorageType(driveType);
+    laptop.setPrice(price);
+    laptop.setColor("default");
+    return laptop;
   },
 
   createPhoneList: function (phoneData) {
@@ -425,6 +464,13 @@ const utilityComponents = {
     });
 
     return outerDiv;
+  },
+
+  clearInputFields: function () {
+    const inputFields = document.querySelectorAll(".form-input");
+    inputFields.forEach((input) => {
+      input.value = "";
+    });
   },
 
   createAssets: function () {},

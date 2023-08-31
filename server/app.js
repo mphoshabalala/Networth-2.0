@@ -139,6 +139,63 @@ app.post("/phone-data", (req, res) => {
   console.log(req.body, user_id);
 });
 
+app.post("/laptop-data", (req, res) => {
+  const {
+    brand,
+    model,
+    age,
+    os,
+    os_version,
+    productUpdateRate,
+    warranty,
+    color,
+    marketDemand,
+    price,
+    ramSize,
+    cpuCores,
+    driveStorage,
+    driveType,
+    user_id,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO laptop 
+      (laptop_id, laptop_brand,laptop_model, laptop_age, laptop_os, laptop_os_version, laptop_update_rate, laptop_warranty, laptop_market_demand, laptop_color, laptop_price, laptop_ram_size, laptop_cpu_cores, laptop_storage_size, laptop_drive_type, user_id)
+      VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  connection.query(
+    sql,
+    [
+      brand,
+      model,
+      age,
+      os,
+      os_version,
+      productUpdateRate,
+      warranty,
+      color,
+      marketDemand,
+      price,
+      ramSize,
+      cpuCores,
+      driveStorage,
+      driveType,
+      user_id,
+    ],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Could not send laptop data succesfully to the database",
+        });
+      }
+
+      return res.status(200).json({ message: "Laptop data sent succesfully" });
+    }
+  );
+  console.log(req.body);
+});
+
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
   if (typeof bearerHeader !== "undefined") {

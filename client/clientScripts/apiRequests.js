@@ -37,8 +37,8 @@ const api = {
         console.error("Error fetching admin data:", error);
       });
   },
-  postPhoneData: function (phoneData) {
-    return fetch(uri + "/phone-data", {
+  postData: function (uri, phoneData) {
+    return fetch(uri, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
