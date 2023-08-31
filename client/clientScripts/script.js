@@ -38,8 +38,11 @@ if (body) {
   } else if (assets) {
     assets.append(utilityComponents.createLoggedHeader());
     api.fetchAssets(uri, token).then((data) => {
-      console.log(data);
       assets.append(utilityComponents.createPhoneList(data.assets));
+    });
+
+    api.fetchLaptopData(uri, token).then((data) => {
+      assets.append(utilityComponents.createLaptopList(data.laptops));
     });
   }
 
@@ -189,7 +192,6 @@ api
             driveType,
             user_id,
           };
-          console.log(laptopData);
           utilityComponents.clearInputFields();
 
           //send the data to the server

@@ -3,6 +3,17 @@ import Laptop from "../Classes/Laptop.js";
 import utilities from "./utilities.js";
 // import Mobile from "../Classes/Phone.js";
 const utilityComponents = {
+  createOuterDiv: function () {
+    const outerDiv = utilities.createDiv("item-List", " ");
+    const mainHeader = utilities.createDiv("list-item", "list-item-header");
+    mainHeader.append(
+      utilities.createTag("p", "item-name", "asset", "Item Name"),
+      utilities.createTag("p", "item-name", "asset", "Current Price"),
+      utilities.createTag("p", "item-name", "asset", "Trend")
+    );
+
+    return outerDiv;
+  },
   // create select tag
   createBrandSelector: function (DataObject) {
     const select = utilities.createTag(
@@ -408,6 +419,7 @@ const utilityComponents = {
   },
 
   createPhoneList: function (phoneData) {
+    // const outerDiv = createOuterDiv();
     const outerDiv = utilities.createDiv("item-List", " ");
     const mainHeader = utilities.createDiv("list-item", "list-item-header");
     mainHeader.append(
@@ -473,7 +485,69 @@ const utilityComponents = {
     });
   },
 
-  createAssets: function () {},
+  createLaptopList: function (laptopData) {
+    // const outerDiv = createOuterDiv();
+    const outerDiv = utilities.createDiv("item-List", " ");
+    const mainHeader = utilities.createDiv("list-item", "list-item-header");
+    mainHeader.append(
+      utilities.createTag("p", "item-name", "asset", "Item Name"),
+      utilities.createTag("p", "item-name", "asset", "Current Price"),
+      utilities.createTag("p", "item-name", "asset", "Trend")
+    );
+    outerDiv.append(mainHeader);
+    let index = 0;
+    laptopData.forEach((dataElement) => {
+      const laptop = utilityComponents.buildLaptop(
+        dataElement.laptop_brand,
+        dataElement.laptop_model,
+        dataElement.laptop_age,
+        dataElement.laptop_os,
+        dataElement.laptop_os_version,
+        dataElement.laptop_ram_size,
+        dataElement.laptop_cpu_cores,
+        dataElement.laptop_storage_size,
+        dataElement.laptop_drive_type,
+        dataElement.laptop_price,
+        dataElement.laptop_market_demand,
+        dataElement.laptop_update_rate,
+        dataElement.laptop_warranty
+      );
+      index++;
+      let item;
+      if (index % 2 === 0) {
+        item = utilities.createDiv("list-item", "even-item");
+      } else {
+        item = utilities.createDiv("list-item", "odd-item");
+      }
+
+      const name = utilities.createTag(
+        "p",
+        "item-name",
+        "asset",
+        laptop.getBrand() + " " + laptop.getModel()
+      );
+      const currentPrice = utilities.createTag(
+        "p",
+        "item-name",
+        "asset",
+        `$${(
+          laptop.getPrice() -
+          (laptop.calculateDepreciationPercentage() / 100) * laptop.getPrice()
+        ).toFixed(2)}`
+      );
+      const observeAssetTrend = utilities.createButton(
+        "btn-secondary",
+        `${laptop.getBrand()}-trend`,
+        "button",
+        "See Trend"
+      );
+
+      item.append(name, currentPrice, observeAssetTrend);
+      outerDiv.append(item);
+    });
+
+    return outerDiv;
+  },
 };
 
 export default utilityComponents;

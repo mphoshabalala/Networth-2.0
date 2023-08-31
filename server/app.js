@@ -30,7 +30,7 @@ app.get("/user-data", verifyToken, (req, res) => {
   res.json({ user_id: authenticatedUser });
 });
 
-app.get("/user-assets", verifyToken, (req, res) => {
+app.get("/user-phones", verifyToken, (req, res) => {
   const user_id = req.user_id;
   const sql = `
     SELECT *
@@ -39,13 +39,30 @@ app.get("/user-assets", verifyToken, (req, res) => {
   `;
   connection.query(sql, [user_id], (err, results) => {
     if (err) {
-      console.log("Could not access data from the database succesfully");
-      return res
-        .status(500)
-        .json({ error: "Could not access data from the database succesfully" });
+      return res.status(500).json({
+        error: "Could not access phones data from the database succesfully",
+      });
     }
     // console.log(results);
     res.status(200).json({ assets: results });
+  });
+});
+
+app.get("/user-laptops", verifyToken, (req, res) => {
+  const user_id = req.user_id;
+  const sql = `
+    SELECT * 
+    FROM laptop
+    WHERE user_id = ?
+  `;
+
+  connection.query(sql, [user_id], (err, results) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Could not access laptops data from the database succesfully",
+      });
+    }
+    res.status(200).json({ laptops: results });
   });
 });
 
@@ -88,8 +105,6 @@ app.get("/admin", (req, res) => {
 });
 
 app.post("/phone-data", (req, res) => {
-  // const user_id = req.user_id;
-  //get phone data from client
   const {
     brand,
     model,
@@ -136,7 +151,6 @@ app.post("/phone-data", (req, res) => {
       });
     }
   );
-  console.log(req.body, user_id);
 });
 
 app.post("/laptop-data", (req, res) => {
@@ -148,8 +162,8 @@ app.post("/laptop-data", (req, res) => {
     os_version,
     productUpdateRate,
     warranty,
-    color,
     marketDemand,
+    color,
     price,
     ramSize,
     cpuCores,
@@ -174,8 +188,8 @@ app.post("/laptop-data", (req, res) => {
       os_version,
       productUpdateRate,
       warranty,
-      color,
       marketDemand,
+      color,
       price,
       ramSize,
       cpuCores,
@@ -193,7 +207,6 @@ app.post("/laptop-data", (req, res) => {
       return res.status(200).json({ message: "Laptop data sent succesfully" });
     }
   );
-  console.log(req.body);
 });
 
 function verifyToken(req, res, next) {

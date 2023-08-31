@@ -1,7 +1,18 @@
 const api = {
   //request assets
   fetchAssets: function (uri, token) {
-    return fetch(uri + "/user-assets", {
+    return fetch(uri + "/user-phones", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      return response.json();
+    });
+  },
+
+  fetchLaptopData: function (uri, token) {
+    return fetch(uri + "/user-laptops", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
