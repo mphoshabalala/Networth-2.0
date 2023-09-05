@@ -427,7 +427,11 @@ const utilityComponents = {
       utilities.createTag("p", "item-name", "asset", "Current Price"),
       utilities.createTag("p", "item-name", "asset", "Trend")
     );
-    outerDiv.append(mainHeader);
+
+    if (phoneData.length > 0) {
+      outerDiv.append(mainHeader);
+    }
+
     let index = 0;
     phoneData.forEach((dataElement) => {
       const mobile = utilityComponents.buildMobile(
@@ -494,7 +498,10 @@ const utilityComponents = {
       utilities.createTag("p", "item-name", "asset", "Current Price"),
       utilities.createTag("p", "item-name", "asset", "Trend")
     );
-    outerDiv.append(mainHeader);
+    if (laptopData.length > 0) {
+      outerDiv.append(mainHeader);
+    }
+
     let index = 0;
     laptopData.forEach((dataElement) => {
       const laptop = utilityComponents.buildLaptop(
